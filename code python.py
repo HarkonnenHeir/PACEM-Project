@@ -4,7 +4,7 @@ import random  # Simule l'aléatoire
 import tkinter  # Affiche l'interface utilisateur
 import serial  # Permet la communication avec la carte Arduino
 import json  # Charge le fichier contenant les musiques
-from collections import defaultdict  # Optimiser le code en créant des indexes
+from collections import defaultdict  # Optimise le code en créant des indexes
 
 
 class Music:

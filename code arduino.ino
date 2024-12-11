@@ -12,11 +12,14 @@ CRGB leds[LED_NUMBER];
 void setup() {
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, LED_NUMBER);
   FastLED.setBrightness(128);
+  pacem_starts()
 }
 
 void loop() {
   if (Serial.available() > 0) {
     String description = Serial.readStringUntil('\n'); 
+    description.toLowerCase()
+    
   }
   delay(1000);
 }
@@ -26,6 +29,9 @@ void vocal_recognition() {
 }
 
 void pacem_starts() {
+  for (int i = 0, i <NUM_LEDS, i++) {
+    leds[i] = CRGB(0, 120, 255);
+    }
 }
 
 void pause() {
@@ -33,12 +39,11 @@ void pause() {
     leds[i] = CRGB(0, 0, 0) // Éteint le bandeau
 }
 
-void create_immersion(description) {
-  if ("combat") in description
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(255, 0, 0); // Rouge pur (255 pour rouge, 0 pour vert et bleu)
+void change_color() {
+  for (int i, i < NUM_LEDS, i++) {
+    leds[i] = CRGB(red, green, blue)
+    }
   }
-  
   // Afficher les couleurs sur les LEDs
   FastLED.show();
 }

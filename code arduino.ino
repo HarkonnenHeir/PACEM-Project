@@ -3,7 +3,9 @@
 #define LED_NUMBER 270
 #define LED_PIN 50
 
-String str = "None";
+int red = 0;
+int green = 0;
+int blue = 0;
 
 CRGB leds[LED_NUMBER];
 
@@ -27,6 +29,8 @@ void pacem_starts() {
 }
 
 void pause() {
+  for (int i=0, i<NUM_LEDS, i++) {
+    leds[i] = CRGB(0, 0, 0) // Éteint le bandeau
 }
 
 void create_immersion(description) {

@@ -18,7 +18,12 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     String description = Serial.readStringUntil('\n'); 
-    description.toLowerCase()
+    description.toLowerCase();
+    if ("combat" in description) {
+      red = 250;
+      green = 0;
+      blue = 0;
+    }
     
   }
   delay(1000);

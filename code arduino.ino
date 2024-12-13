@@ -19,10 +19,135 @@ void loop() {
   if (Serial.available() > 0) {
     String description = Serial.readStringUntil('\n'); 
     description.toLowerCase();
-    if ("combat" in description) {
-      red = 250;
-      green = 0;
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("montagne") == true) {
+      red = 170;
+      green = 95;
       blue = 0;
+    }
+    if (description.Contains("rivière") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
+    }
+    if (description.Contains("forêt") == true) {
+      red = 30;
+      green = 180;
+      blue = 30;
     }
     
   }

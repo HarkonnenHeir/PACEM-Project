@@ -12,7 +12,7 @@ CRGB leds[LED_NUMBER];
 void setup() {
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, LED_NUMBER);
   FastLED.setBrightness(128);
-  pacem_starts()
+  pacem_starts();
 }
 
 void loop() {
@@ -31,6 +31,18 @@ void loop() {
 
 
 void vocal_recognition() {
+  red = red / 2;
+  blue = blue / 2;
+  green = green / 2;
+  change_color();
+}
+
+
+void end_vocal_recognition() {
+  red = red * 2;
+  green = green * 2;
+  blue = blue * 2;
+  change_color();
 }
 
 void pacem_starts() {
@@ -39,14 +51,16 @@ void pacem_starts() {
     }
 }
 
+
 void pause() {
   for (int i=0, i<NUM_LEDS, i++) {
-    leds[i] = CRGB(0, 0, 0) // Éteint le bandeau
+    leds[i] = CRGB(0, 0, 0);
 }
+
 
 void change_color() {
   for (int i, i < NUM_LEDS, i++) {
-    leds[i] = CRGB(red, green, blue)
+    leds[i] = CRGB(red, green, blue);
     }
   }
   // Afficher les couleurs sur les LEDs

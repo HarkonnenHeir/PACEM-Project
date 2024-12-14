@@ -1,198 +1,67 @@
-#include "FastLED.h"
+#include <FastLED.h>
 
-#define LED_NUMBER 270
-#define LED_PIN 50
+#define LED_PIN     50
+#define NUM_LEDS    250
 
-int red = 0;
-int green = 0;
-int blue = 0;
+int PreviousRed = 0;
+int PreviousGreen = 0;
+int PreviousBlue = 0;
 
-CRGB leds[LED_NUMBER];
+CRGB leds[NUM_LEDS]; 
 
 void setup() {
-  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, LED_NUMBER);
-  FastLED.setBrightness(128);
-  pacem_starts();
+  Serial.begin(9600);
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(50);
+  set_color(100, 100, 100);
+  delay(3000);
+  set_color(0, 0, 0);
 }
 
 void loop() {
   if (Serial.available() > 0) {
-    String description = Serial.readStringUntil('\n'); 
-    description.toLowerCase();
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
+    String description = Serial.readStringUntil('\n');
+
+    if (description.indexOf("play") >= 0) {
+      play();
     }
-    if (description.Contains("montagne") == true) {
-      red = 170;
-      green = 95;
-      blue = 0;
+
+    if (description.indexOf("pause") >= 0) {
+      pause();
     }
-    if (description.Contains("rivière") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
+
+    if (description.indexOf("rivière") >= 0) {
+      set_color(0, 0, 255);
     }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
-    }
-    if (description.Contains("forêt") == true) {
-      red = 30;
-      green = 180;
-      blue = 30;
+    else if (description.indexOf("forêt") >= 0) {
+      set_color(0, 255, 0);
     }
     
   }
-  delay(1000);
 }
 
+void set_color(uint8_t red, uint8_t green, uint8_t blue) {
+  
+  PreviousRed = red;
+  PreviousGreen = green;
+  PreviousBlue = blue;
 
-void vocal_recognition() {
-  red = red / 2;
-  blue = blue / 2;
-  green = green / 2;
-  change_color();
-}
-
-
-void end_vocal_recognition() {
-  red = red * 2;
-  green = green * 2;
-  blue = blue * 2;
-  change_color();
-}
-
-void pacem_starts() {
-  for (int i = 0, i <NUM_LEDS, i++) {
-    leds[i] = CRGB(0, 120, 255);
-    }
-}
-
-
-void pause() {
-  for (int i=0, i<NUM_LEDS, i++) {
-    leds[i] = CRGB(0, 0, 0);
-}
-
-
-void change_color() {
-  for (int i, i < NUM_LEDS, i++) {
-    leds[i] = CRGB(red, green, blue);
-    }
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
   }
-  // Afficher les couleurs sur les LEDs
   FastLED.show();
 }
+
+void pause() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(0, 0, 0);
+  }
+  FastLED.show();
 }
-// À effectuer dans le code :
-// L'éclairage se met en pause quand le bouton Play/Pause est pressé
-// Au démarrage du PACEM, le bandeau émet une lumière blanche
-// Le code associe des mots à une ambiance
+
+void play() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
+  }
+  FastLED.show();
+}

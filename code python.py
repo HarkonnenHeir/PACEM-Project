@@ -113,7 +113,7 @@ def simplify_text(basic_text):
         "marais": ["bayou", "bayous", "marécage", "marécages", "tourbière"],
         "marché": ["brocante", "marchand", "marchands"],
         "montagne": ["mont", "monts", "montagnes"],
-        "océan": ["coquillage", "coquillages", "flots", "mer", "plage", "vague", "vagues"],
+        "océan": ["coquillage", "coquillages", "flots", "île", "îles", "mer", "plage", "vague", "vagues"],
         "plaine": ["champ", "champs", "plaines", "prairie", "prairies", "pré", "prés", "colline", "collines"],
         "prison": [],
         "rivière": ["berge", "fleuve", "ruisseau"],

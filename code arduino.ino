@@ -13,10 +13,11 @@ int PreviousRed = 0;
 int PreviousGreen = 0;
 int PreviousBlue = 0;
 
-String Effect = "";
+int RiverLed = 0;
 
 bool ActiveFire = false;
 bool combatActive = false;
+bool riverActive = false;
 
 byte heat[NUM_LEDS];
 
@@ -40,6 +41,12 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
   
+  if (riverActive && (currentMillis - lastTime >= interval)) {
+    lastTime = currentMillis;
+    simulate_river_effect();
+    FastLED.show();
+  }
+
   if (combatActive && (currentMillis - lastTime >= interval)) {
     lastTime = currentMillis;
     simulate_combat_effect();
@@ -62,10 +69,6 @@ void loop() {
 
     if (description.indexOf("pause") >= 0) {
       pause();
-    }
-
-    if (description.indexOf("rivière") >= 0) {
-      set_color(40, 147, 250);
     }
     if (description.indexOf("forêt") >= 0) {
       set_color(0, 225, 0);
@@ -95,13 +98,20 @@ void loop() {
       set_color(213, 225, 22);
     }
     if (description.indexOf("feu") >= 0) {
-      Effect = "Fire";
       ActiveFire = true;
     } else {
       ActiveFire = false;
     }
     if (description.indexOf("prison") >= 0) {
       set_color(50, 50, 50);
+    }
+    if (description.indexOf("désert") >= 0) {
+      set_color(255, 255, 0);
+    }
+    if (description.indexOf("rivière") >= 0) {
+      riverActive = true;  // Active l'effet hivernal
+    } else {
+      riverActive = false;
     }
     if (description.indexOf("combat") >= 0) {
       combatActive = true;  // Activer l'effet de combat
@@ -139,15 +149,33 @@ void pause() {
 }
 
 void play() {
-  if (Effect == "") {
-    for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
-  }
-
+  for (int i = 0; i < NUM_LEDS; i++) {
+  leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
   }
   
   FastLED.show();
 }
+
+
+void simulate_river_effect() {
+  static uint8_t offset = 0; // Décalage pour simuler le mouvement
+  offset++; // Incrémente le décalage à chaque appel pour déplacer les couleurs
+
+  for (int i = 0; i < NUM_LEDS; i++) {
+    // Calcule une onde sinusoïdale pour créer une variation fluide
+    uint8_t wave = sin8((i * 10) + offset); // Onde de sinus avec un décalage temporel
+
+    // Définir les nuances de bleu pour simuler l'eau
+    uint8_t blue = map(wave, 0, 255, 50, 180); // Bleu dynamique
+    uint8_t green = map(wave, 0, 255, 30, 100); // Vert léger pour ajouter une nuance aquatique
+
+    leds[i] = CRGB(0, green, blue); // Couleur avec variations dynamiques
+  }
+
+  FastLED.show();
+  delay(30); // Contrôle la vitesse du ruissellement
+}
+  
 
 
 void simulate_combat_effect() {
@@ -162,7 +190,7 @@ void simulate_combat_effect() {
     }
   } else {
     intensity -= 5; // Diminue l'intensité progressivement
-    if (intensity <= 50) { // Limite minimale pour un rouge plus sombre
+    if (intensity <= 0) { // Limite minimale pour un rouge plus sombre
       increasing = true;    // Inverse la direction
     }
   }
@@ -173,7 +201,7 @@ void simulate_combat_effect() {
   }
 
   FastLED.show();
-  delay(30); // Contrôle la vitesse de la pulsation
+  delay(20); // Contrôle la vitesse de la pulsation
 }
 
 

@@ -1,10 +1,10 @@
-import speech_recognition as sr  # Gère la reconnaissance vocale
-import pygame  # Contrôle la musique
-import random  # Simule l'aléatoire
-import tkinter  # Affiche l'interface utilisateur
+import speech_recognition as sr  # Permet de gérer la reconnaissance vocale
+import pygame  # Permet de contrôler la musique
+import random  # Permet de simuler l'aléatoire
+import tkinter  # Permet d'afficher l'interface utilisateur
 import serial  # Permet la communication avec la carte Arduino
-import json  # Charge le fichier contenant les musiques
-from collections import defaultdict  # Optimise le code en créant des indexes
+import json  # Permet de charger le fichier contenant les musiques
+from collections import defaultdict  # Permet d'optimiser le code en créant des indexes
 
 
 class Music:
@@ -84,6 +84,7 @@ def choose_music(description, music_list):
 
 
 def detect_speech():
+    arduino.write(" ".join(["vocal_recognition"]).encode())
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         audio = recognizer.listen(source)
@@ -93,6 +94,7 @@ def detect_speech():
             print("Je n'ai pas compris.")
         except sr.RequestError:
             print(f"Erreur de service : {sr.RequestError}")
+        arduino.write(" ".join(["end_vocal_recognition"]).encode())
         return text
 
 
@@ -139,8 +141,7 @@ def simplify_text(basic_text):
         "bizarre": ["étrange", "étranges", "anormal", "anormale", "suspect", "suspecte", "suspects", "suspectes"],
         "émouvant": ["nostalgie", "émotion", "nostalgique"],
         "austère": ["rude", "rudes", "désolé", "désolée", "désolées", "aride", "arides"],
-        "exploration": ["explores", "explore", "explorez", "explorer", "engouffrez", "engouffrer", "pénètres",
-                        "pénétrez", "pénétrer", "fouilles", "fouillez, fouiller", "entres", "entrez", "entrer"],
+        "exploration": ["explores", "explore", "explorez", "explorer", "engouffrez", "engouffrer"],
         "voyage": ["voyagez", "traversez", "périple", "aventure", "chevauchée", "marche", "randonnée", "odyssée"],
         "bruyant": ["assourdissant", "sonore", "tapageur", "bruyante", "assourdissante"],
         "magie": ["magique", "féérique", "merveilleux", "merveilleuse"],
@@ -182,7 +183,7 @@ def simplify_text(basic_text):
                 simplified_word = key
                 simplified_text.append(simplified_word)
                 break
-
+    print(simplified_text)
     return simplified_text
 
 
@@ -215,9 +216,11 @@ def validate_manual_control():
 def stop_music():
     global pause
     if pause is False:
+        arduino.write(" ".join(["pause"]).encode())
         pygame.mixer.music.pause()
         pause = True
     else:
+        arduino.write(" ".join(["play"]).encode())
         pygame.mixer.music.unpause()
         pause = False
 

@@ -44,8 +44,7 @@ void loop() {
     FastLED.show();
   }
 
-  if (ActiveCombat && (currentMillis - lastTime >= interval)) {
-    lastTime = currentMillis;
+  if (ActiveCombat) {
     simulate_combat_effect();
     FastLED.show();
   }

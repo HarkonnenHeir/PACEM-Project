@@ -13,11 +13,9 @@ int PreviousRed = 0;
 int PreviousGreen = 0;
 int PreviousBlue = 0;
 
-int RiverLed = 0;
-
 bool ActiveFire = false;
-bool combatActive = false;
-bool riverActive = false;
+bool ActiveCombat = false;
+bool ActiveRiver = false;
 
 byte heat[NUM_LEDS];
 
@@ -41,13 +39,12 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
   
-  if (riverActive && (currentMillis - lastTime >= interval)) {
-    lastTime = currentMillis;
+  if (ActiveRiver) {
     simulate_river_effect();
     FastLED.show();
   }
 
-  if (combatActive && (currentMillis - lastTime >= interval)) {
+  if (ActiveCombat && (currentMillis - lastTime >= interval)) {
     lastTime = currentMillis;
     simulate_combat_effect();
     FastLED.show();
@@ -109,14 +106,14 @@ void loop() {
       set_color(255, 255, 0);
     }
     if (description.indexOf("rivière") >= 0) {
-      riverActive = true;  // Active l'effet hivernal
+      ActiveRiver = true;
     } else {
-      riverActive = false;
+      ActiveRiver = false;
     }
     if (description.indexOf("combat") >= 0) {
-      combatActive = true;  // Activer l'effet de combat
+      ActiveCombat = true;
     } else {
-      combatActive = false;
+      ActiveCombat = false;
     }
     if (description.indexOf("taverne") >= 0) {
     }
@@ -148,6 +145,7 @@ void pause() {
   FastLED.show();
 }
 
+
 void play() {
   for (int i = 0; i < NUM_LEDS; i++) {
   leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
@@ -158,50 +156,55 @@ void play() {
 
 
 void simulate_river_effect() {
-  static uint8_t offset = 0; // Décalage pour simuler le mouvement
-  offset++; // Incrémente le décalage à chaque appel pour déplacer les couleurs
+  float wave_length = 10.0;
+  static int led_variation = 0;
+  static bool increasing_river = false;
 
-  for (int i = 0; i < NUM_LEDS; i++) {
-    // Calcule une onde sinusoïdale pour créer une variation fluide
-    uint8_t wave = sin8((i * 10) + offset); // Onde de sinus avec un décalage temporel
+  leds[0] = CRGB(0, 0, (sin(led_variation / wave_length) + 1) * 127.5);
 
-    // Définir les nuances de bleu pour simuler l'eau
-    uint8_t blue = map(wave, 0, 255, 50, 180); // Bleu dynamique
-    uint8_t green = map(wave, 0, 255, 30, 100); // Vert léger pour ajouter une nuance aquatique
+  for (int i = NUM_LEDS - 1; i > 0; i--) {
+    leds[i] = leds[i - 1];
+  }
+  delay(20);
 
-    leds[i] = CRGB(0, green, blue); // Couleur avec variations dynamiques
+  if (increasing_river == true) {
+    led_variation += 1;
+    if (led_variation >= 255) {
+      increasing_river = false;
+    }
+  } else {
+    led_variation -= 1;
+    if (led_variation <= 0) { 
+      increasing_river = true;
+    }
   }
 
   FastLED.show();
-  delay(30); // Contrôle la vitesse du ruissellement
 }
-  
 
 
 void simulate_combat_effect() {
-  static uint8_t intensity = 150;   // Intensité initiale (milieu entre rouge clair et rouge foncé)
-  static bool increasing = true;   // Direction de la pulsation
+  static uint8_t intensity = 150;
+  static bool increasing_combat = true;
 
-  // Met à jour l'intensité pour créer une pulsation
-  if (increasing) {
-    intensity += 5; // Augmente l'intensité progressivement
-    if (intensity >= 255) { // Limite maximale pour un rouge vif
-      increasing = false;   // Inverse la direction
+  if (increasing_combat == true) {
+    intensity += 5;
+    if (intensity >= 255) {
+      increasing_combat = false;
     }
   } else {
-    intensity -= 5; // Diminue l'intensité progressivement
-    if (intensity <= 0) { // Limite minimale pour un rouge plus sombre
-      increasing = true;    // Inverse la direction
+    intensity -= 5;
+    if (intensity <= 0) { 
+      increasing_combat = true;
     }
   }
 
-  // Applique la couleur rouge à toutes les LEDs
   for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(intensity, 0, 0); // Rouge avec intensité variable
+    leds[i] = CRGB(intensity, 0, 0);
   }
 
   FastLED.show();
-  delay(20); // Contrôle la vitesse de la pulsation
+  delay(20);
 }
 
 
@@ -223,11 +226,11 @@ void simulate_campfire() {
   }
 }
 
-// Fonction personnalisée pour convertir "chaleur" en nuances de rouge, orange et jaune
 CRGB HeatToOrange(byte temperature) {
   if (temperature < 128) {
-    return CRGB(temperature * 2, temperature, 0);  // Rouge-orangé
+    return CRGB(temperature * 2, temperature, 0);
   } else {
-    return CRGB(255, 255 - ((temperature - 128) * 2), 0);  // Jaune-orangé
+    return CRGB(255, 255 - ((temperature - 128) * 2), 0);
   }
 }
+

@@ -2,12 +2,7 @@
 
 #define LED_PIN     50
 #define NUM_LEDS    250
-#define FRAMES_PER_SECOND 60 // Images par seconde pour l'animation
-#define COOLING     75      // Plus bas = flamme plus lente
-#define SPARKING    140     // Plus haut = plus d'étincelles
 
-unsigned long lastTime = 0;
-unsigned long interval = 1000 / FRAMES_PER_SECOND;
 
 int PreviousRed = 0;
 int PreviousGreen = 0;
@@ -16,6 +11,7 @@ int PreviousBlue = 0;
 bool ActiveFire = false;
 bool ActiveCombat = false;
 bool ActiveRiver = false;
+bool ActiveTavern = false;
 
 byte heat[NUM_LEDS];
 
@@ -37,8 +33,12 @@ void setup() {
 }
 
 void loop() {
-  unsigned long currentMillis = millis();
   
+  if (ActiveTavern) {
+    simulate_tavern_effect();
+    FastLED.show();
+  }
+
   if (ActiveRiver) {
     simulate_river_effect();
     FastLED.show();
@@ -49,10 +49,7 @@ void loop() {
     FastLED.show();
   }
 
-  if (ActiveFire && (currentMillis - lastTime >= interval)) {
-    lastTime = currentMillis;
-    
-    // Simulation du feu
+  if (ActiveFire) {
     simulate_campfire();
     FastLED.show();
   }
@@ -66,6 +63,31 @@ void loop() {
     if (description.indexOf("pause") >= 0) {
       pause();
     }
+
+    if (description.indexOf("rivière") >= 0) {
+      ActiveRiver = true;
+    } else {
+      ActiveRiver = false;
+    }
+
+    if (description.indexOf("combat") >= 0) {
+      ActiveCombat = true;
+    } else {
+      ActiveCombat = false;
+    }
+
+    if (description.indexOf("feu") >= 0) {
+      ActiveFire = true;
+    } else {
+      ActiveFire = false;
+    }
+
+    if (description.indexOf("taverne") >= 0) {
+      ActiveTavern = true;
+    } else {
+      ActiveTavern = false;
+    }
+
     if (description.indexOf("forêt") >= 0) {
       set_color(0, 225, 0);
     }
@@ -93,36 +115,20 @@ void loop() {
     if (description.indexOf("plaine") >= 0) {
       set_color(213, 225, 22);
     }
-    if (description.indexOf("feu") >= 0) {
-      ActiveFire = true;
-    } else {
-      ActiveFire = false;
-    }
     if (description.indexOf("prison") >= 0) {
       set_color(50, 50, 50);
     }
     if (description.indexOf("désert") >= 0) {
       set_color(255, 255, 0);
     }
-    if (description.indexOf("rivière") >= 0) {
-      ActiveRiver = true;
-    } else {
-      ActiveRiver = false;
-    }
-    if (description.indexOf("combat") >= 0) {
-      ActiveCombat = true;
-    } else {
-      ActiveCombat = false;
-    }
-    if (description.indexOf("taverne") >= 0) {
-    }
+
     if (description.indexOf("nuit") >= 0) {
       set_color(PreviousRed / 4, PreviousGreen / 4, PreviousBlue / 4);
     }
+    
     if (description.indexOf("sinistre") >= 0) {
       set_color(PreviousRed / 2, PreviousGreen / 2, PreviousBlue / 2);
     }
-    
   }
 }
 
@@ -164,7 +170,7 @@ void simulate_river_effect() {
   for (int i = NUM_LEDS - 1; i > 0; i--) {
     leds[i] = leds[i - 1];
   }
-  delay(20);
+  delay(40);
 
   if (increasing_river == true) {
     led_variation += 1;
@@ -181,6 +187,36 @@ void simulate_river_effect() {
   FastLED.show();
 }
 
+
+void simulate_tavern_effect() {
+  static uint8_t blendFactor = 0;       // Facteur de mélange (0-255)
+  static bool increasing = true;       // Indique si le facteur augmente ou diminue
+
+  // Couleurs de base
+  CRGB color1 = CRGB::Yellow;
+  CRGB color2 = CRGB::Green;
+
+  // Mélange des couleurs selon le facteur actuel
+  CRGB blendedColor = blend(color1, color2, blendFactor);
+
+  // Applique la couleur mélangée à toutes les LEDs
+  fill_solid(leds, NUM_LEDS, blendedColor);
+
+  // Met à jour l'affichage des LEDs
+  FastLED.show();
+
+  // Ajuste le facteur de mélange
+  if (increasing) {
+    blendFactor++;
+    if (blendFactor >= 255) increasing = false;
+  } else {
+    blendFactor--;
+    if (blendFactor <= 0) increasing = true;
+  }
+
+  // Pause pour ralentir la transition
+  delay(50);
+}
 
 void simulate_combat_effect() {
   static uint8_t intensity = 150;
@@ -208,28 +244,11 @@ void simulate_combat_effect() {
 
 
 void simulate_campfire() {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    heat[i] = qsub8(heat[i], random(0, ((COOLING * 10) / NUM_LEDS) + 2));  // Réduire la chaleur
+  for (int i = 0; i<NUM_LEDS; i++) {
+    
+    leds[i] = CRGB(random(150, 255), random(0, 75), 0);
+  
   }
-
-  // Ajouter des "étincelles" aléatoires pour simuler des montées d'intensité
-  for (int i = 0; i < NUM_LEDS; i++) {
-    if (random(255) < SPARKING) {
-      heat[i] = qadd8(heat[i], random(160, 255));  // Intensifier la chaleur
-    }
-  }
-
-  // Convertir les niveaux de chaleur en nuances d'orange/rouge/jaune
-  for (int j = 0; j < NUM_LEDS; j++) {
-    leds[j] = HeatToOrange(heat[j]);  // Convertir la chaleur en couleur de flamme
-  }
-}
-
-CRGB HeatToOrange(byte temperature) {
-  if (temperature < 128) {
-    return CRGB(temperature * 2, temperature, 0);
-  } else {
-    return CRGB(255, 255 - ((temperature - 128) * 2), 0);
-  }
+  delay(10);
 }
 

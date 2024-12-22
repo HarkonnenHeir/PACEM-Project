@@ -192,9 +192,8 @@ void simulate_tavern_effect() {
   static uint8_t blendFactor = 0;       // Facteur de mélange (0-255)
   static bool increasing = true;       // Indique si le facteur augmente ou diminue
 
-  // Couleurs de base
   CRGB color1 = CRGB::Yellow;
-  CRGB color2 = CRGB::Green;
+  CRGB color2 = CRGB(255, 80, 0);
 
   // Mélange des couleurs selon le facteur actuel
   CRGB blendedColor = blend(color1, color2, blendFactor);

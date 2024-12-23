@@ -7,13 +7,13 @@
 int PreviousRed = 0;
 int PreviousGreen = 0;
 int PreviousBlue = 0;
+char PreviousEffect = "";
 
 bool ActiveFire = false;
 bool ActiveCombat = false;
 bool ActiveRiver = false;
 bool ActiveTavern = false;
 
-byte heat[NUM_LEDS];
 
 CRGB leds[NUM_LEDS]; 
 
@@ -37,21 +37,25 @@ void loop() {
   if (ActiveTavern) {
     simulate_tavern_effect();
     FastLED.show();
+
   }
 
   if (ActiveRiver) {
     simulate_river_effect();
     FastLED.show();
+
   }
 
   if (ActiveCombat) {
     simulate_combat_effect();
     FastLED.show();
+
   }
 
   if (ActiveFire) {
-    simulate_campfire();
+    simulate_fire_effect();
     FastLED.show();
+
   }
   if (Serial.available() > 0) {
     String description = Serial.readStringUntil('\n');
@@ -66,25 +70,26 @@ void loop() {
 
     if (description.indexOf("rivière") >= 0) {
       ActiveRiver = true;
-    } else {
+      pause();
+    } else if (description.indexOf("play") < 0) {
       ActiveRiver = false;
     }
 
     if (description.indexOf("combat") >= 0) {
       ActiveCombat = true;
-    } else {
+    } else if (description.indexOf("play") < 0) {
       ActiveCombat = false;
     }
 
     if (description.indexOf("feu") >= 0) {
       ActiveFire = true;
-    } else {
+    } else if (description.indexOf("play") < 0) {
       ActiveFire = false;
     }
 
     if (description.indexOf("taverne") >= 0) {
       ActiveTavern = true;
-    } else {
+    } else if (description.indexOf("play") < 0) {
       ActiveTavern = false;
     }
 
@@ -132,16 +137,19 @@ void loop() {
   }
 }
 
+
 void set_color(uint8_t red, uint8_t green, uint8_t blue) {
   PreviousRed = red;
   PreviousGreen = green;
   PreviousBlue = blue;
+  PreviousEffect = "";
 
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB(red, green, blue);
   }
   FastLED.show();
 }
+
 
 void pause() {
   for (int i = 0; i < NUM_LEDS; i++) {
@@ -152,15 +160,31 @@ void pause() {
 
 
 void play() {
-  for (int i = 0; i < NUM_LEDS; i++) {
-  leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
+  if (PreviousEffect == "") {
+    for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
+    }
+  } 
+  else {
+    if (PreviousEffect == "River") {
+      ActiveRiver = true;
+    }
+    if (PreviousEffect == "Combat") {
+      ActiveCombat = true;
+    }
+    if (PreviousEffect == "Tavern") {
+      ActiveTavern = true;
+    }
+    if (PreviousEffect == "Fire") {
+      ActiveFire = true;
+    }  
   }
-  
   FastLED.show();
 }
 
 
 void simulate_river_effect() {
+  PreviousEffect = "River";
   float wave_length = 10.0;
   static int led_variation = 0;
   static bool increasing_river = false;
@@ -183,28 +207,20 @@ void simulate_river_effect() {
       increasing_river = true;
     }
   }
-
-  FastLED.show();
 }
 
 
 void simulate_tavern_effect() {
+  PreviousEffect = "Tavern";
   static uint8_t blendFactor = 0;       // Facteur de mélange (0-255)
   static bool increasing = true;       // Indique si le facteur augmente ou diminue
 
-  CRGB color1 = CRGB::Yellow;
-  CRGB color2 = CRGB(255, 80, 0);
+  
+  CRGB blendedColor = blend(CRGB::Yellow, CRGB(255, 80, 0), blendFactor);
 
-  // Mélange des couleurs selon le facteur actuel
-  CRGB blendedColor = blend(color1, color2, blendFactor);
-
-  // Applique la couleur mélangée à toutes les LEDs
   fill_solid(leds, NUM_LEDS, blendedColor);
 
-  // Met à jour l'affichage des LEDs
-  FastLED.show();
 
-  // Ajuste le facteur de mélange
   if (increasing) {
     blendFactor++;
     if (blendFactor >= 255) increasing = false;
@@ -213,11 +229,12 @@ void simulate_tavern_effect() {
     if (blendFactor <= 0) increasing = true;
   }
 
-  // Pause pour ralentir la transition
   delay(50);
 }
 
+
 void simulate_combat_effect() {
+  PreviousEffect = "Combat";
   static uint8_t intensity = 150;
   static bool increasing_combat = true;
 
@@ -237,12 +254,12 @@ void simulate_combat_effect() {
     leds[i] = CRGB(intensity, 0, 0);
   }
 
-  FastLED.show();
   delay(20);
 }
 
 
-void simulate_campfire() {
+void simulate_fire_effect() {
+  PreviousEffect = "Fire";
   for (int i = 0; i<NUM_LEDS; i++) {
     
     leds[i] = CRGB(random(150, 255), random(0, 75), 0);

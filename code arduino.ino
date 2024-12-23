@@ -7,7 +7,7 @@
 int PreviousRed = 0;
 int PreviousGreen = 0;
 int PreviousBlue = 0;
-char PreviousEffect = "";
+String PreviousEffect = "";
 
 bool ActiveFire = false;
 bool ActiveCombat = false;
@@ -29,36 +29,17 @@ void setup() {
     set_color(255-i, 255-i, 255-i);
     delay(5);
   }
-  
 }
 
 void loop() {
   
-  if (ActiveTavern) {
-    simulate_tavern_effect();
-    FastLED.show();
-
-  }
-
-  if (ActiveRiver) {
-    simulate_river_effect();
-    FastLED.show();
-
-  }
-
-  if (ActiveCombat) {
-    simulate_combat_effect();
-    FastLED.show();
-
-  }
-
-  if (ActiveFire) {
-    simulate_fire_effect();
-    FastLED.show();
-
-  }
   if (Serial.available() > 0) {
     String description = Serial.readStringUntil('\n');
+
+    ActiveFire = false;
+    ActiveRiver = false;
+    ActiveCombat = false;
+    ActiveTavern = false;
 
     if (description.indexOf("play") >= 0) {
       play();
@@ -69,28 +50,24 @@ void loop() {
     }
 
     if (description.indexOf("rivière") >= 0) {
+      PreviousEffect = "River";
       ActiveRiver = true;
       pause();
-    } else if (description.indexOf("play") < 0) {
-      ActiveRiver = false;
-    }
+    } 
 
     if (description.indexOf("combat") >= 0) {
+      PreviousEffect = "Combat";
       ActiveCombat = true;
-    } else if (description.indexOf("play") < 0) {
-      ActiveCombat = false;
     }
 
     if (description.indexOf("feu") >= 0) {
+      PreviousEffect = "Fire";
       ActiveFire = true;
-    } else if (description.indexOf("play") < 0) {
-      ActiveFire = false;
-    }
+    } 
 
     if (description.indexOf("taverne") >= 0) {
+      PreviousEffect = "Tavern";
       ActiveTavern = true;
-    } else if (description.indexOf("play") < 0) {
-      ActiveTavern = false;
     }
 
     if (description.indexOf("forêt") >= 0) {
@@ -135,6 +112,26 @@ void loop() {
       set_color(PreviousRed / 2, PreviousGreen / 2, PreviousBlue / 2);
     }
   }
+
+  if (ActiveTavern) {
+    simulate_tavern_effect();
+    FastLED.show();
+  }
+
+  if (ActiveRiver) {
+    simulate_river_effect();
+    FastLED.show();
+  }
+
+  if (ActiveCombat) {
+    simulate_combat_effect();
+    FastLED.show();
+  }
+
+  if (ActiveFire) {
+    simulate_fire_effect();
+    FastLED.show();
+  }
 }
 
 
@@ -142,7 +139,7 @@ void set_color(uint8_t red, uint8_t green, uint8_t blue) {
   PreviousRed = red;
   PreviousGreen = green;
   PreviousBlue = blue;
-  PreviousEffect = "";
+  PreviousEffect = "Static";
 
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB(red, green, blue);
@@ -160,7 +157,7 @@ void pause() {
 
 
 void play() {
-  if (PreviousEffect == "") {
+  if (PreviousEffect == "Static") {
     for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(PreviousRed, PreviousGreen, PreviousBlue);
     }
@@ -184,7 +181,6 @@ void play() {
 
 
 void simulate_river_effect() {
-  PreviousEffect = "River";
   float wave_length = 10.0;
   static int led_variation = 0;
   static bool increasing_river = false;
@@ -211,7 +207,6 @@ void simulate_river_effect() {
 
 
 void simulate_tavern_effect() {
-  PreviousEffect = "Tavern";
   static uint8_t blendFactor = 0;       // Facteur de mélange (0-255)
   static bool increasing = true;       // Indique si le facteur augmente ou diminue
 
@@ -234,7 +229,6 @@ void simulate_tavern_effect() {
 
 
 void simulate_combat_effect() {
-  PreviousEffect = "Combat";
   static uint8_t intensity = 150;
   static bool increasing_combat = true;
 
@@ -259,7 +253,6 @@ void simulate_combat_effect() {
 
 
 void simulate_fire_effect() {
-  PreviousEffect = "Fire";
   for (int i = 0; i<NUM_LEDS; i++) {
     
     leds[i] = CRGB(random(150, 255), random(0, 75), 0);

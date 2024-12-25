@@ -4,9 +4,7 @@ Ce dépôt est à destination du jury dans le cadre du concours Innovez organis�
 
 
 Améliorations à effectuer :
-- Actualiser le fichier JSON et classer les noms (30 minutes)
-- Finir la programmation Arduino autour des 4 effets dynamiques : combat, feu, rivière et taverne (4 heures)
-- Installer CapCut (durée indéterminée)
+- Pseudo-code à écrire
 - Filmer la vidéo (48 heures)
 - Monter la vidéo (3 heures)
 - Prendre des photos du PACEM (1 heure)

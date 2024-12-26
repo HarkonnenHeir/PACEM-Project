@@ -4,7 +4,6 @@ Ce dépôt est à destination du jury dans le cadre du concours Innovez organis�
 
 
 Améliorations à effectuer :
-- Pseudo-code à écrire
 - Filmer la vidéo (48 heures)
 - Monter la vidéo (3 heures)
 - Prendre des photos du PACEM (1 heure)

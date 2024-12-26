@@ -234,7 +234,7 @@ arduino = serial.Serial('/dev/tty.usbserial-1410', 9600)
 
 root = tkinter.Tk()
 root.geometry("200x150")
-root.title("P.A.C.E.M. Controller")
+root.title("PACEM Controller")
 
 current_music = None
 pause = False

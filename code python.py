@@ -33,6 +33,7 @@ class MusicLibrary:
         return list({music.source: music for music in matching_musics}.values())
 
     def load_from_json(self, json_path):
+        # La fonction renvoie toutes les musiques du fichier JSON
         with open(json_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
@@ -40,12 +41,6 @@ class MusicLibrary:
             adjectives = item["adjectives"]
             source = item["source"]
             self.add_music(Music(adjectives, source))
-
-
-def load_music_data(file_path):  # La fonction renvoie toutes les musiques du fichier JSON
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-    return [Music(item["adjectives"], item["source"]) for item in data]
 
 
 def choose_music(description, music_list):

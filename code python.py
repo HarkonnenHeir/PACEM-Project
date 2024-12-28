@@ -42,7 +42,7 @@ class MusicLibrary:
             self.add_music(Music(adjectives, source))
 
 
-def load_music_data(file_path):
+def load_music_data(file_path):  # La fonction renvoie toutes les musiques du fichier JSON
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
     return [Music(item["adjectives"], item["source"]) for item in data]
@@ -233,12 +233,13 @@ pygame.mixer.init()
 arduino = serial.Serial('/dev/tty.usbserial-1420', 9600)
 
 root = tkinter.Tk()
-root.geometry("200x150")
+root.geometry("200x150")  # Dimensions de la fenêtre
 root.title("PACEM Controller")
 
 current_music = None
 pause = False
 
+# Initialisation des boutons de l'interface
 voice_recognition_button = tkinter.Button(root, text="Détection de parole", command=activate_voice_recognition)
 controle_button = tkinter.Button(root, text="Contrôle manuel", command=manual_control)
 validate_button = tkinter.Button(root, text="Valider le texte", command=validate_manual_control)

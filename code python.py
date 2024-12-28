@@ -230,7 +230,7 @@ library.load_from_json("music_data.json")
 
 pygame.mixer.init()
 
-arduino = serial.Serial('/dev/tty.usbserial-1410', 9600)
+arduino = serial.Serial('/dev/tty.usbserial-1420', 9600)
 
 root = tkinter.Tk()
 root.geometry("200x150")

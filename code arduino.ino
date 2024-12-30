@@ -1,3 +1,6 @@
+// Ce fichier est sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale 4.0 International.
+// Voir le fichier LICENSE pour plus de détails.
+
 #include <FastLED.h>
 
 #define LED_PIN     50

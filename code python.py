@@ -1,3 +1,6 @@
+# Ce fichier est sous licence Creative Commons Attribution - Pas d'Utilisation Commerciale 4.0 International.
+# Voir le fichier LICENSE pour plus de détails.
+
 import speech_recognition as sr  # Permet de gérer la reconnaissance vocale
 import pygame  # Permet de contrôler la musique
 import random  # Permet de simuler l'aléatoire

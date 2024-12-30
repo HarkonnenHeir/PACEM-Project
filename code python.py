@@ -82,7 +82,6 @@ def choose_music(description, music_list):
 
 
 def detect_speech():
-    arduino.write(" ".join(["vocal_recognition"]).encode())
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
         audio = recognizer.listen(source)
@@ -92,7 +91,6 @@ def detect_speech():
             print("Je n'ai pas compris.")
         except sr.RequestError:
             print(f"Erreur de service : {sr.RequestError}")
-        arduino.write(" ".join(["end_vocal_recognition"]).encode())
         return text
 
 
